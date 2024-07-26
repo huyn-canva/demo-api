@@ -3,7 +3,21 @@
    <head>
      <title>My Connect App</title>
    </head>
+   <script>
+      var connect = async () => {
+        await fetch('/auth/connect_url')
+        .then(
+          async(response) => {
+            if(response.ok) {
+              res = await response.json();
+              window.open(res.url, '_blank').focus();
+            }
+          }
+        )
+      }
+   </script>
    <body>
      <h1>{{ message }}</h1>
+     <button onclick="connect()">Connect</button>
    </body>
 </html>
