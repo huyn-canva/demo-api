@@ -1,17 +1,18 @@
 import openapi_client
-from typing import Optional
+
+from auth import Auth
 
 
+class CanvaClient():
+    configuration:openapi_client.Configuration
+    _client: openapi_client.ApiClient
 
-configuration = openapi_client.Configuration(
-    host="https://api.canva.com/rest"
-)
+    def __init__(self, auth: Auth):
+        self.configuration = openapi_client.Configuration(
+            host="https://api.canva.com/rest",
+            access_token=auth.access_token,
+        )
+        self._client=openapi_client.ApiClient(self.configuration)
 
-
-
-def get_api_client() -> openapi_client.ApiClient:
-    return openapi_client.ApiClient(configuration)
-
-
-def get_design_api(client: openapi_client.ApiClient) -> openapi_client.DesignApi:
-    return openapi_client.DesignApi(client)
+    def get_design_api(self) -> openapi_client.DesignApi:
+        return openapi_client.DesignApi(self._client)

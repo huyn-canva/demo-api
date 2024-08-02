@@ -10,7 +10,7 @@
           async(response) => {
             if(response.ok) {
               res = await response.json();
-              window.open(res.url, '_blank').focus();
+              window.location.replace(res.url);
             }
           }
         )

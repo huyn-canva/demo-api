@@ -31,7 +31,6 @@ class Auth():
         self.code_verifier, self.code_challenge = pkce.generate_pkce_pair(96)
         self.state = secrets.token_urlsafe(96)
 
-
     def get_auth_url(self) -> str:
         params={
             "code_challenge_method": "s256",
@@ -39,14 +38,12 @@ class Auth():
             "client_id": self.client_id,
             "code_challenge": self.code_challenge,
             "state": self.state,
-            "scope": "folder:read folder:write asset:read asset:write",
+            "scope": "folder:read asset:read design:meta:read",
         }
         if self.redirect_uri:
             params["redirect_uri"] = self.redirect_uri
 
-        url = f"{AUTH_URL}?{urlencode(params)}"
-        print(url)
-        return url
+        return f"{AUTH_URL}?{urlencode(params)}"
 
     def get_access_token(self, code: str, state: Optional[str] = None) -> None:
         self.code = code
@@ -69,7 +66,6 @@ class Auth():
             headers=headers,
             data=data
         )
-        pprint(curlify(response.request))
         if response.ok: 
             json = response.json()
             self.access_token = json["access_token"]
@@ -78,13 +74,4 @@ class Auth():
             print(f"status code: {response.status_code}")
             json = response.json()
             pprint(json)
-
-def curlify(req) -> str:
-    command = "curl -X {method} -H {headers} -d '{data}' '{uri}'"
-    method = req.method
-    uri = req.url
-    data = req.body
-    headers = ['"{0}: {1}"'.format(k, v) for k, v in req.headers.items()]
-    headers = " -H ".join(headers)
-    return command.format(method=method, headers=headers, data=data, uri=uri)
 
